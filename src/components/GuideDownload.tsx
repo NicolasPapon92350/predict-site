@@ -33,8 +33,45 @@ const guideHighlights = [
 
 export default function GuideDownload() {
   const [submitted, setSubmitted] = useState(false);
-  const { recordSignal } = useTracking();
+  const [submitting, setSubmitting] = useState(false);
+  const { score, recordSignal } = useTracking();
   const formStartedRef = useRef(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    let utmData: Record<string, string> | undefined;
+    try {
+      const raw = localStorage.getItem("utm_data");
+      if (raw) utmData = JSON.parse(raw);
+    } catch {}
+
+    try {
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: data.get("firstName"),
+          lastName: data.get("lastName"),
+          email: data.get("email"),
+          company: data.get("company"),
+          phone: data.get("phone") || undefined,
+          formType: "GUIDE_DOWNLOAD",
+          utmData,
+          leadScore: score,
+        }),
+      });
+    } catch {}
+
+    setSubmitted(true);
+    setSubmitting(false);
+    recordSignal("form_completed", "guide_download");
+    recordSignal("guide_downloaded", "guide_prevention");
+  };
 
   return (
     <section id="guide" className="py-16 bg-gradient-to-r from-primary-dark via-primary to-primary-light relative overflow-hidden">
@@ -109,12 +146,7 @@ export default function GuideDownload() {
                       recordSignal("form_started", "guide_download");
                     }
                   }}
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    setSubmitted(true);
-                    recordSignal("form_completed", "guide_download");
-                    recordSignal("guide_downloaded", "guide_prevention");
-                  }}
+                  onSubmit={handleSubmit}
                   className="space-y-4"
                 >
                   <div className="grid grid-cols-2 gap-4">
@@ -124,6 +156,7 @@ export default function GuideDownload() {
                       </label>
                       <input
                         type="text"
+                        name="firstName"
                         required
                         className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                         placeholder="Jean"
@@ -135,6 +168,7 @@ export default function GuideDownload() {
                       </label>
                       <input
                         type="text"
+                        name="lastName"
                         required
                         className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                         placeholder="Dupont"
@@ -147,6 +181,7 @@ export default function GuideDownload() {
                     </label>
                     <input
                       type="email"
+                      name="email"
                       required
                       className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                       placeholder="jean.dupont@entreprise.com"
@@ -159,6 +194,7 @@ export default function GuideDownload() {
                       </label>
                       <input
                         type="text"
+                        name="company"
                         required
                         className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                         placeholder="Mon entreprise"
@@ -170,6 +206,7 @@ export default function GuideDownload() {
                       </label>
                       <input
                         type="tel"
+                        name="phone"
                         className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                         placeholder="06 12 34 56 78"
                       />
@@ -177,9 +214,10 @@ export default function GuideDownload() {
                   </div>
                   <button
                     type="submit"
-                    className="group w-full flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold text-white bg-accent rounded-xl hover:bg-accent-light transition-all shadow-lg shadow-accent/25"
+                    disabled={submitting}
+                    className="group w-full flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold text-white bg-accent rounded-xl hover:bg-accent-light transition-all shadow-lg shadow-accent/25 disabled:opacity-50"
                   >
-                    Télécharger le guide gratuit
+                    {submitting ? "Envoi en cours..." : "Télécharger le guide gratuit"}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </form>

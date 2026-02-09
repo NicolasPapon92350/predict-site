@@ -1,3 +1,5 @@
+import { getSessionId } from "./session";
+
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
@@ -9,9 +11,81 @@ function hasConsent(): boolean {
   return localStorage.getItem("cookie_consent") === "accepted";
 }
 
+// --- Event buffer for server-side tracking ---
+interface QueuedEvent {
+  sessionId: string;
+  eventName: string;
+  properties?: Record<string, string | number>;
+  url?: string;
+  referrer?: string;
+}
+
+let eventBuffer: QueuedEvent[] = [];
+let flushTimer: ReturnType<typeof setTimeout> | null = null;
+
+function flushEvents() {
+  if (eventBuffer.length === 0) return;
+  const batch = eventBuffer.splice(0, 50);
+  try {
+    const blob = new Blob([JSON.stringify(batch)], { type: "application/json" });
+    navigator.sendBeacon("/api/events", blob);
+  } catch {
+    // Fallback to fetch
+    fetch("/api/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(batch),
+      keepalive: true,
+    }).catch(() => {});
+  }
+}
+
+function scheduleFlush() {
+  if (flushTimer) clearTimeout(flushTimer);
+  flushTimer = setTimeout(flushEvents, 2000);
+}
+
+function queueEvent(eventName: string, properties?: Record<string, string | number>) {
+  const sessionId = getSessionId();
+  if (!sessionId) return;
+
+  eventBuffer.push({
+    sessionId,
+    eventName,
+    properties,
+    url: window.location.pathname,
+    referrer: document.referrer || undefined,
+  });
+
+  if (eventBuffer.length >= 10) {
+    flushEvents();
+  } else {
+    scheduleFlush();
+  }
+}
+
+// Flush on page hide (tab close/navigate away)
+if (typeof window !== "undefined") {
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      flushEvents();
+    }
+  });
+}
+
+// --- GA4 + server dual tracking ---
 function sendEvent(eventName: string, params: Record<string, string | number>) {
-  if (!hasConsent() || !window.gtag) return;
-  window.gtag("event", eventName, params);
+  // Always queue for server
+  queueEvent(eventName, params);
+
+  // Also send to GA4 if consent
+  if (hasConsent() && window.gtag) {
+    window.gtag("event", eventName, params);
+  }
+}
+
+export function trackPageView() {
+  queueEvent("page_view");
 }
 
 export function trackSectionView(sectionId: string) {

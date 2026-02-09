@@ -14,12 +14,43 @@ import {
 
 export default function LeadForm() {
   const [submitted, setSubmitted] = useState(false);
-  const { recordSignal } = useTracking();
+  const [submitting, setSubmitting] = useState(false);
+  const { score, recordSignal } = useTracking();
   const formStartedRef = useRef(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitting(true);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    let utmData: Record<string, string> | undefined;
+    try {
+      const raw = localStorage.getItem("utm_data");
+      if (raw) utmData = JSON.parse(raw);
+    } catch {}
+
+    try {
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: data.get("firstName"),
+          lastName: data.get("lastName"),
+          email: data.get("email"),
+          company: data.get("company"),
+          employees: data.get("employees") || undefined,
+          message: data.get("message") || undefined,
+          formType: "DEMO_REQUEST",
+          utmData,
+          leadScore: score,
+        }),
+      });
+    } catch {}
+
     setSubmitted(true);
+    setSubmitting(false);
     recordSignal("form_completed", "demo_request");
   };
 
@@ -135,6 +166,7 @@ export default function LeadForm() {
                       </label>
                       <input
                         type="text"
+                        name="firstName"
                         required
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
                         placeholder="Jean"
@@ -146,6 +178,7 @@ export default function LeadForm() {
                       </label>
                       <input
                         type="text"
+                        name="lastName"
                         required
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
                         placeholder="Dupont"
@@ -159,6 +192,7 @@ export default function LeadForm() {
                     </label>
                     <input
                       type="email"
+                      name="email"
                       required
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
                       placeholder="jean@entreprise.com"
@@ -171,6 +205,7 @@ export default function LeadForm() {
                     </label>
                     <input
                       type="text"
+                      name="company"
                       required
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
                       placeholder="Nom de votre entreprise"
@@ -181,7 +216,10 @@ export default function LeadForm() {
                     <label className="block text-sm font-medium text-foreground mb-1.5">
                       Nombre de collaborateurs
                     </label>
-                    <select className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm text-muted">
+                    <select
+                      name="employees"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm text-muted"
+                    >
                       <option value="">Sélectionnez</option>
                       <option value="1-50">1 - 50</option>
                       <option value="50-200">50 - 200</option>
@@ -196,6 +234,7 @@ export default function LeadForm() {
                       Message (optionnel)
                     </label>
                     <textarea
+                      name="message"
                       rows={3}
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm resize-none"
                       placeholder="Décrivez brièvement vos enjeux de prévention..."
@@ -204,9 +243,10 @@ export default function LeadForm() {
 
                   <button
                     type="submit"
-                    className="group w-full flex items-center justify-center gap-2 px-6 py-4 bg-accent text-white font-semibold rounded-xl hover:bg-accent-light transition-all shadow-lg shadow-accent/25 text-base"
+                    disabled={submitting}
+                    className="group w-full flex items-center justify-center gap-2 px-6 py-4 bg-accent text-white font-semibold rounded-xl hover:bg-accent-light transition-all shadow-lg shadow-accent/25 text-base disabled:opacity-50"
                   >
-                    Demander ma démo gratuite
+                    {submitting ? "Envoi en cours..." : "Demander ma démo gratuite"}
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
 

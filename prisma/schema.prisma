@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+enum FormType {
+  DEMO_REQUEST
+  GUIDE_DOWNLOAD
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  company   String
+  phone     String?
+  employees String?
+  message   String?
+  formType  FormType
+  utmData   Json?
+  leadScore Int?
+  createdAt DateTime @default(now())
+}
+
+model Event {
+  id         String   @id @default(cuid())
+  sessionId  String
+  eventName  String
+  properties Json?
+  url        String?
+  referrer   String?
+  userAgent  String?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([eventName])
+  @@index([createdAt])
+  @@index([sessionId])
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  sessionId String
+  path      String
+  referrer  String?
+  userAgent String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([sessionId])
+}

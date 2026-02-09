@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, type ReactNode } from "react";
 import { useLeadScore } from "@/hooks/useLeadScore";
-import { captureUTMParams } from "@/lib/tracking";
+import { captureUTMParams, trackPageView } from "@/lib/tracking";
 import type { LeadLevel } from "@/lib/lead-scoring";
 
 interface TrackingContextValue {
@@ -26,6 +26,7 @@ export default function TrackingProvider({ children }: { children: ReactNode }) 
 
   useEffect(() => {
     captureUTMParams();
+    trackPageView();
   }, []);
 
   useEffect(() => {
