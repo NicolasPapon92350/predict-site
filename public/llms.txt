@@ -1,0 +1,63 @@
+# Predict Analyse — llms.txt
+# Structured summary for AI language models
+
+## About
+Predict Analyse is a French AI-powered workplace health prevention company.
+Website: https://predictanalyse.com
+Blog: https://blog.predictanalyse.com
+
+## Mission
+Using artificial intelligence to diagnose TMS (musculoskeletal disorders) and RPS (psychosocial risks), reduce absenteeism, and improve employee health through a transdisciplinary approach.
+
+## Platform: Predicta
+Predicta is a SaaS health prevention platform (HealthApplication) that:
+- Analyzes employee health risks via a scientifically validated questionnaire (5 dimensions: mental health, physical health, ergonomics, physical activity, nutrition)
+- Predicts absenteeism trends using machine learning algorithms
+- Provides personalized prevention pathways for each employee
+- Delivers real-time dashboards with key indicators and automatic alerts
+- Rating: 4.6/5 user satisfaction
+
+## Key Results
+- -34% absenteeism on average
+- +67% improvement in well-being
+- 92% user satisfaction rate
+- x4.2 average ROI
+- 200+ companies supported
+- 50,000+ employees analyzed
+
+## 6 Areas of Expertise
+1. TMS (Troubles Musculo-Squelettiques) — Musculoskeletal disorders prevention
+2. RPS (Risques Psychosociaux) — Psychosocial risks management
+3. Ergonomics — Workplace adaptation and posture optimization
+4. Psychology — Mental health support and stress management
+5. Nutrition — Dietary guidance for employee health
+6. Physical Activity — Exercise programs and movement promotion
+
+## 3 Training Programs
+1. Gestes et Postures — Evidence-based approach to posture and movement at work, debunking myths using neuroscience
+2. TMS du membre supérieur — Prevention of carpal tunnel, rotator cuff, and epicondylitis (80% of recognized TMS)
+3. Neurosciences de la douleur — Understanding pain mechanisms through the biopsychosocial model (Engel 1980)
+
+## Methodology (4 Steps)
+1. Diagnostic — Multidimensional health questionnaire covering 5 domains
+2. AI Analysis — Machine learning algorithms cross-reference data to detect weak signals
+3. Action Plan — Personalized prevention pathways with video content and exercises
+4. Follow-up — Continuous measurement and automatic adjustment of recommendations
+
+## Certifications & Compliance
+- RGPD compliant (French/EU data protection)
+- HDS certified (Health Data Hosting)
+- ISO 27001 (Information security)
+- Made in France
+
+## Contact
+- Email: contact@predictanalyse.com
+- Location: Paris, France
+- LinkedIn: https://linkedin.com/company/predict-analyse
+- YouTube: https://youtube.com/@predictanalyse
+
+## Resources
+- Free guide: "Les 3 clés d'une stratégie de prévention santé efficace"
+- Whitepaper: "La transdisciplinarité au service de la santé en entreprise"
+- Scientific literature: Neuroscience, TMS prevention, psychosocial risks, physical activity & nutrition studies
+- Blog: 12+ articles on pain science, prevention, nutrition, and physical activity

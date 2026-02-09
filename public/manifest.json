@@ -1,0 +1,16 @@
+{
+  "name": "Predict Analyse",
+  "short_name": "Predict",
+  "description": "Plateforme IA de prévention santé au travail. Diagnostiquez les risques de TMS et RPS, prédisez l'absentéisme et améliorez la santé de vos collaborateurs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#022282",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
