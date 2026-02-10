@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useTracking } from "@/components/tracking/TrackingProvider";
+import { getSessionId } from "@/lib/session";
 import {
   Download,
   CheckCircle2,
@@ -63,6 +64,7 @@ export default function GuideDownload() {
           formType: "GUIDE_DOWNLOAD",
           utmData,
           leadScore: score,
+          sessionId: getSessionId(),
         }),
       });
     } catch {}

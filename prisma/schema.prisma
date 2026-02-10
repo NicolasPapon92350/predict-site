@@ -31,7 +31,10 @@ model Contact {
   formType  FormType
   utmData   Json?
   leadScore Int?
+  sessionId String?
   createdAt DateTime @default(now())
+
+  @@index([sessionId])
 }
 
 model Event {

@@ -1,6 +1,7 @@
 "use client";
 
-import { ClipboardCheck, BarChart3, Lightbulb, Repeat } from "lucide-react";
+import { ClipboardCheck, BarChart3, Lightbulb, Repeat, ArrowRight } from "lucide-react";
+import { useTracking } from "@/components/tracking/TrackingProvider";
 
 const steps = [
   {
@@ -38,6 +39,8 @@ const steps = [
 ];
 
 export default function HowItWorks() {
+  const { recordSignal } = useTracking();
+
   return (
     <section id="methode" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,6 +87,18 @@ export default function HowItWorks() {
                 </p>
               </div>
             ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <a
+              href="#demo"
+              onClick={() => recordSignal("cta_click", "howitworks_demo")}
+              className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-semibold text-white bg-accent rounded-full hover:bg-accent-light transition-all shadow-lg shadow-accent/25"
+            >
+              Lancez votre diagnostic
+              <ArrowRight className="w-4 h-4" />
+            </a>
+            <p className="text-sm text-muted mt-3">Première étape offerte, sans engagement</p>
           </div>
         </div>
       </div>

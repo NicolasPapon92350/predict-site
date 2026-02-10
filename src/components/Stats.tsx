@@ -1,6 +1,7 @@
 "use client";
 
-import { Users, TrendingDown, Award, Building2 } from "lucide-react";
+import { Users, TrendingDown, Award, Building2, ArrowRight } from "lucide-react";
+import { useTracking } from "@/components/tracking/TrackingProvider";
 
 const stats = [
   {
@@ -34,6 +35,8 @@ const stats = [
 ];
 
 export default function Stats() {
+  const { recordSignal } = useTracking();
+
   return (
     <section id="stats" className="relative -mt-8 z-10 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,6 +57,16 @@ export default function Stats() {
               <p className="text-sm text-muted mt-1">{stat.label}</p>
             </div>
           ))}
+        </div>
+        <div className="text-center mt-6">
+          <a
+            href="#demo"
+            onClick={() => recordSignal("cta_click", "stats_demo")}
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-light transition-colors"
+          >
+            Rejoignez-les, demandez votre démo gratuite
+            <ArrowRight className="w-4 h-4" />
+          </a>
         </div>
       </div>
     </section>

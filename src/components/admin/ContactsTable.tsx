@@ -1,5 +1,8 @@
 "use client";
 
+import Link from "next/link";
+import { Eye } from "lucide-react";
+
 interface Contact {
   id: string;
   firstName: string;
@@ -36,6 +39,7 @@ export default function ContactsTable({ contacts, compact = false }: ContactsTab
               <th className="text-left px-6 py-3 font-medium text-muted">Type</th>
               {!compact && <th className="text-left px-6 py-3 font-medium text-muted">Score</th>}
               <th className="text-left px-6 py-3 font-medium text-muted">Date</th>
+              <th className="text-left px-6 py-3 font-medium text-muted">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -69,11 +73,20 @@ export default function ContactsTable({ contacts, compact = false }: ContactsTab
                     minute: "2-digit",
                   })}
                 </td>
+                <td className="px-6 py-4">
+                  <Link
+                    href={`/admin/contacts/${c.id}`}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    Parcours
+                  </Link>
+                </td>
               </tr>
             ))}
             {contacts.length === 0 && (
               <tr>
-                <td colSpan={compact ? 5 : 6} className="px-6 py-12 text-center text-muted">
+                <td colSpan={compact ? 6 : 7} className="px-6 py-12 text-center text-muted">
                   Aucun contact pour le moment.
                 </td>
               </tr>

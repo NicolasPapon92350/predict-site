@@ -1,6 +1,7 @@
 "use client";
 
-import { Star, Quote } from "lucide-react";
+import { Star, Quote, ArrowRight } from "lucide-react";
+import { useTracking } from "@/components/tracking/TrackingProvider";
 
 const testimonials = [
   {
@@ -36,6 +37,8 @@ const testimonials = [
 ];
 
 export default function Testimonials() {
+  const { recordSignal } = useTracking();
+
   return (
     <section id="resultats" className="py-24 bg-gradient-to-b from-surface to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -93,6 +96,17 @@ export default function Testimonials() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <a
+            href="#demo"
+            onClick={() => recordSignal("cta_click", "testimonials_demo")}
+            className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-semibold text-white bg-accent rounded-full hover:bg-accent-light transition-all shadow-lg shadow-accent/25"
+          >
+            Obtenez les mêmes résultats
+            <ArrowRight className="w-4 h-4" />
+          </a>
         </div>
       </div>
     </section>

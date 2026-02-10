@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useTracking } from "@/components/tracking/TrackingProvider";
+import { getSessionId } from "@/lib/session";
 import {
   FileText,
   BookOpen,
@@ -81,8 +82,34 @@ export default function Resources() {
   const { recordSignal } = useTracking();
   const formStartedRef = useRef<Record<string, boolean>>({});
 
-  const handleSubmit = (id: string, e: React.FormEvent) => {
+  const handleSubmit = async (id: string, e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    let utmData: Record<string, string> | undefined;
+    try {
+      const raw = localStorage.getItem("utm_data");
+      if (raw) utmData = JSON.parse(raw);
+    } catch {}
+
+    try {
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: data.get("firstName"),
+          lastName: data.get("lastName"),
+          email: data.get("email"),
+          company: data.get("company"),
+          phone: data.get("phone") || undefined,
+          formType: "GUIDE_DOWNLOAD",
+          utmData,
+          sessionId: getSessionId(),
+        }),
+      });
+    } catch {}
+
     setSubmitted((prev) => ({ ...prev, [id]: true }));
     recordSignal("form_completed", `resource_${id}`);
     recordSignal("guide_downloaded", id);
@@ -202,12 +229,14 @@ export default function Resources() {
                       <div className="grid grid-cols-2 gap-3">
                         <input
                           type="text"
+                          name="firstName"
                           required
                           placeholder="Prénom"
                           className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
                         />
                         <input
                           type="text"
+                          name="lastName"
                           required
                           placeholder="Nom"
                           className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
@@ -215,6 +244,7 @@ export default function Resources() {
                       </div>
                       <input
                         type="email"
+                        name="email"
                         required
                         placeholder="Email professionnel"
                         className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
@@ -222,12 +252,14 @@ export default function Resources() {
                       <div className="grid grid-cols-2 gap-3">
                         <input
                           type="text"
+                          name="company"
                           required
                           placeholder="Entreprise"
                           className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
                         />
                         <input
                           type="tel"
+                          name="phone"
                           placeholder="Téléphone"
                           className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
                         />

@@ -6,7 +6,7 @@ import { prisma } from "@/lib/db/prisma";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { firstName, lastName, email, company, phone, employees, message, formType, utmData, leadScore } = body;
+    const { firstName, lastName, email, company, phone, employees, message, formType, utmData, leadScore, sessionId } = body;
 
     if (!firstName || !lastName || !email || !company || !formType) {
       return NextResponse.json(
@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
         formType,
         utmData: utmData ? JSON.parse(JSON.stringify(utmData)) : undefined,
         leadScore: leadScore ? Number(leadScore) : undefined,
+        sessionId: sessionId || undefined,
       },
     });
 
