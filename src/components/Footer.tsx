@@ -113,6 +113,9 @@ export default function Footer() {
             <a href="#" className="hover:text-gray-300 transition-colors">
               Cookies
             </a>
+            <a href="/admin/login" className="hover:text-gray-300 transition-colors">
+              Administration
+            </a>
           </div>
         </div>
       </div>
